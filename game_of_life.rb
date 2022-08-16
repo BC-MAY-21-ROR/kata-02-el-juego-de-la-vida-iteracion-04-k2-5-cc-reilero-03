@@ -1,6 +1,6 @@
 class Cell
 
-	attr_accessor :alive, :neighbors
+	attr_accessor :alive, :neighbors, :next_state
 
 	def initialize
 
@@ -16,38 +16,53 @@ class Cell
 
 	end
 
-	def  to_string
+	def to_string
 
-		@alive ? "*" : "."
+		@alive ? '*' : '.'
 
 	end
+
+  def live
+    @alive = true
+  end
+
+  def kill
+    @alive = false
+  end
 
 
 end
 
 class Grid
 
-	attr_accessor :width, :height, :grid
+	attr_accessor :width, :height, :grid, :table, :input
 
-	def initialize(width, height)
+	def initialize(width, height, input)
 
 		@width = width
 		@height = height
-		@grid = create_grid
+    @input = input
+		@table = create_grid
 
 	end
 
 	def create_grid
 
-		@array = Array.new(@height, Array.new(@width){Cell.new})
-		@array
+		array = Array.new(@height) {Array.new(@width) {Cell.new} }
+    
+    @height.times do |row|
+			@width.times do |cell|
+				@input[row][cell] === '*' ? array[row][cell].live : array[row][cell].kill
+			end
+		end
+		array
 
 	end
 
 	def update_grid
-		@grid.each do |row|
-			row.each do |cell|
-				grid[row][cell].alive = grid[row][cell].next_state
+		@height.times do |row|
+			@width.times do |cell|
+				@table[row][cell].alive = @table[row][cell].next_state
 			end
 		end
 	end
@@ -60,28 +75,26 @@ end
 class Game
 
 	def initialize(input)
-
-		puts input[0].length
-		puts input.length
-		@grid= Grid.new(input[0].length, input.length)
-		@grid = @grid.grid
-		puts @grid
+    @input = input
+		@grid= Grid.new(input[0].length, input.length, @input)
 
 	end
 
 	def start
-		Printer.new(@grid)
-		Iteration.new(@grid)
+		Printer.new(@grid, @grid.table)
+		Iteration.new(@grid, @grid.table)
 		@grid.update_grid
+    Printer.new(@grid, @grid.table)
 	end
 
 end
 
 class Iteration
 
-	def initialize (grid)
+	def initialize (grid,table)
 
 		@grid = grid
+    @table = table
 		check_status
 
 	end
@@ -91,10 +104,10 @@ class Iteration
 			@grid.height.times do |row|
 				@grid.width.times do |column|
 
-					cell = @grid[row][column]
+					cell = @table[row][column]
 
 					check_neighbors(column, row)
-					cell.nextState = rules(cell)
+					cell.next_state = rules(cell)
 
 				end
 			end
@@ -104,18 +117,22 @@ class Iteration
 
 	def check_neighbors(col,row)
 		directions = [[-1,-1],[0,-1],[+1,-1],[-1,0],[+1,0],[-1,+1],[0,+1], [+1,+1] ]
+    cell = @table[row][col]
 		directions.each do |x,y|
-			check_direction(col+x,row+y) && @grid[x][y].alive ? @grid[col][row].neighbors += 1 :  @grid[col][row].neighbors += 0
+			if check_direction(col+x,row+y)
+        @table[row+y][col+x].alive ? cell.neighbors += 1 : cell.neighbors += 0
+      end
+
 		end
 	end
 
 	def check_direction(x,y)
-		return (x>=0 && y>=0 && x<@grid.width && y<@grid.height)
+		return (x>=0 && x<@grid.width && y>=0 && y<@grid.height)
 	end
 
 	def rules(cell)
-		neighbor = cell.neighbor
-		(cell.alive? && [2, 3].include?(neighbor) || (!cell.alive? && neighbor == 3))
+		neighbor = cell.neighbors
+		(cell.alive && [2, 3].include?(neighbor) || (!cell.alive && neighbor == 3))
 	end
 
 
@@ -123,10 +140,10 @@ end
 
 class Printer
 
-	def initialize(grid)
+	def initialize(grid,table)
 		grid.height.times do |i|
 			grid.width.times do |j|
-				puts grid[i][j].to_string
+				print table[i][j].to_string
 			end
 			puts ""
 	end
@@ -141,6 +158,7 @@ def open_file(ruta)
 end
 
 	data = open_file('./grid.txt')
+
 
 game = Game.new(data)
 game.start
