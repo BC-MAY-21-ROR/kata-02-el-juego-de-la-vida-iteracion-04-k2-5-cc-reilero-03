@@ -25,7 +25,7 @@ The Game of Life is not your typical computer game. It is a 'cellular automaton'
 
 This game became widely known when it was mentioned in an article published by Scientific American in 1970. It consists of a collection of cells which, based on a few mathematical rules, can live, die or multiply. Depending on the initial conditions, the cells form various patterns throughout the course of the game.
 
-This Kata is about calculating the next generation of Conway’s game of life, given any starting position. 
+This Kata is about calculating the next generation of Conway’s game of life, given any starting position.
 
 You start with a two dimensional grid of cells, where each cell is either alive or dead. In this version of the problem, the grid is finite, and no life can exist off the edges. When calcuating the next generation of the grid, follow these rules:
 
@@ -64,7 +64,7 @@ Generation 2:
 - Ejecución
   - Puede ejecutarse desde la linea de comandos y mostrar la salida en consola
 - Código fuente
-  - Orientado a Objetos 
+  - Orientado a Objetos
   - Métodos Pequeños
   - [Aplicar los principios SOLID](https://rubygarage.org/blog/solid-principles-of-ood)
 - Otros
@@ -72,8 +72,8 @@ Generation 2:
   - Incluir en el repositorio el reporte HTML que genera [SandiMeter](https://github.com/makaroni4/sandi_meter)
   - El repositorio debe reflejar el trabajo en equipo (en la conversación del repositorio, commits)
   - Los commits de Git deben ser atómicos y significativos
-  - Actualizar [este archivo](setup/README.md) en donde se describa el proceso para hacer funcionar el proyecto 
-  
+  - Actualizar [este archivo](setup/README.md) en donde se describa el proceso para hacer funcionar el proyecto
+
 ## Tecnologías
 - Lenguaje de programación Ruby
 - Framework para pruebas [Rspec](https://rspec.info/) ó [Minitest](https://github.com/seattlerb/minitest)
